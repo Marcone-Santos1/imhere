@@ -34,7 +34,6 @@ export const Home = () => {
 
     return (
         <View style={styles.container}>
-            <StatusBar style="dark"/>
 
             <Text style={styles.eventName}>Nome do evento</Text>
             <Text style={styles.eventDate}>Quinta, 29 de Fevereiro de 2024</Text>
@@ -61,13 +60,18 @@ export const Home = () => {
                     showsVerticalScrollIndicator={false}
                     nestedScrollEnabled={true}
                     data={participants}
+                    keyExtractor={item => item.id}
                     renderItem={({item}) => (
                         <Participant
                             name={item.name}
                             onRemove={() => handleParticipantRemove(item.id)}
                         />
                     )}
-                    keyExtractor={item => item.id}
+                    ListEmptyComponent={() => (
+                        <Text style={styles.listEmptyText}>
+                            Ninguém chegou no evento ainda? Adicione participantes a sua lista de presença
+                        </Text>
+                    )}
                 />
             </View>
 
