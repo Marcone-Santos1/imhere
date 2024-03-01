@@ -13,6 +13,9 @@ export const styles = StyleSheet.create({
         marginTop: 36,
         marginBottom: 42,
     },
+    participantsContainer: {
+        flex: 1,
+    },
     eventName: {
         color: '#FFF',
         fontSize: 24,
