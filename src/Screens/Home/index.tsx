@@ -1,8 +1,9 @@
-import {StatusBar} from 'expo-status-bar';
-import {FlatList, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {styles} from "./styles";
+import {Alert, FlatList, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useState} from "react";
+import uuid from 'react-native-uuid';
+
 import {Participant} from "../../Components/Participant";
+import {styles} from "./styles";
 
 interface ParticipantData {
     id: string,
@@ -16,20 +17,36 @@ export const Home = () => {
 
     const handleParticipantAdd = () => {
         const data: ParticipantData = {
-            id: String(new Date().getTime()),
+            id: uuid.v4().toString(),
             name: newParticipant
         }
 
-        if (newParticipant === '' || participants.some(participant => participant.name === newParticipant)) return;
+        if (newParticipant === '' || participants.some(participant => participant.name === newParticipant)) {
+            return Alert.alert('Participante Já existe', "Já existe um participante na lista com esse nome");
+        }
 
         setParticipants(oldState => [...oldState, data]);
     }
 
-    const handleParticipantRemove = (id: string) => {
-        setParticipants(oldState => oldState.filter(
-                participant => participant.id !== id
-            )
-        )
+    const handleParticipantRemove = ({ id, name }: ParticipantData) => {
+
+        Alert.alert('Remover', `Tem certeza que deseja remover o participante ${name}?`, [
+            {
+                text: 'Sim',
+                onPress: () => {
+                    setParticipants(oldState => oldState.filter(
+                            participant => participant.id !== id
+                        )
+                    )
+                    Alert.alert('Deletado', `O participante ${name}, foi deletado com sucesso!`)
+                },
+                style: 'destructive'
+            },
+            {
+                text: 'Não',
+                style: 'cancel'
+            }
+        ])
     }
 
     return (
@@ -64,7 +81,7 @@ export const Home = () => {
                     renderItem={({item}) => (
                         <Participant
                             name={item.name}
-                            onRemove={() => handleParticipantRemove(item.id)}
+                            onRemove={() => handleParticipantRemove(item)}
                         />
                     )}
                     ListEmptyComponent={() => (
